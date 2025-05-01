@@ -1,0 +1,729 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OneClash WiFi Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    /* Override Tailwind for card before pseudo */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+      transform: rotate(45deg);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+      50% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(0.95);
+        opacity: 0.7;
+      }
+    }
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+    .loader {
+      border-top-color: transparent;
+      animation: rotation 1s linear infinite;
+    }
+    .history-item:hover {
+      background-color: #e0f2fe;
+      cursor: pointer;
+    }
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-scaleIn {
+      animation: modalIn 0.3s ease forwards;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen text-gray-900">
+  <div class="max-w-7xl mx-auto px-5 py-6">
+    <nav
+      class="bg-gradient-to-br from-[#2c3e50] to-[#1a252f] rounded-2xl mb-8 shadow-lg flex flex-col md:flex-row md:justify-between md:items-center p-5 gap-4"
+    >
+      <div class="text-white text-2xl font-semibold flex items-center gap-2 select-none">
+        <i class="fas fa-wifi"></i>
+        <span>OneClash Store</span>
+      </div>
+      <div id="navButtons" class="flex flex-wrap gap-4 justify-center md:justify-start">
+      </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="homePage" class="page block space-y-8" tabindex="-1" aria-label="Halaman Beli Voucher">
+      <article
+        class="card bg-white rounded-3xl p-8 shadow-md relative overflow-hidden"
+        aria-label="Pilih Paket WiFi"
+      >
+        <h2 class="text-2xl mb-6 font-semibold select-none"><i class="fas fa-gift"></i> Pilih Paket WiFi</h2>
+        <form id="purchaseForm" class="space-y-6" novalidate>
+          <div>
+            <label
+              for="duration"
+              class="block mb-2 text-lg font-medium select-none"
+              ><i class="fas fa-calendar-alt"></i> Durasi Paket</label
+            >
+            <select
+              id="duration"
+              class="form-control w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#3498db] focus:border-[#3498db]"
+              required
+            >
+              <option value="1">6 Jam (Rp 20,000)</option>
+              <option value="2">12 Jam (Rp 30,000)</option>
+              <option value="3">3 Hari (Rp 60,000)</option>
+              <option value="4">7 Hari (Rp 100,000)</option>
+              <option value="5">30 Hari (Rp 350,000)</option>
+            </select>
+          </div>
+          <div>
+            <label
+              for="email"
+              class="block mb-2 text-lg font-medium select-none"
+              ><i class="fas fa-envelope"></i> Email Pembeli</label
+            >
+            <input
+              type="email"
+              id="email"
+              class="form-control w-full rounded-xl border-2 border-gray-300 px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#3498db] focus:border-[#3498db]"
+              placeholder="contoh@email.com"
+              required
+              autocomplete="email"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn-primary w-full bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white font-semibold rounded-xl py-4 flex justify-center items-center gap-3 transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+            aria-live="polite"
+          >
+            <span id="loadText"><i class="fas fa-credit-card"></i> Bayar Sekarang</span>
+            <div
+              id="loader"
+              class="loader border-4 border-white rounded-full w-6 h-6 hidden"
+              aria-hidden="true"
+            ></div>
+          </button>
+        </form>
+      </article>
+
+      <article
+        class="card bg-white rounded-3xl p-8 shadow-md relative overflow-hidden"
+        aria-label="Lokasi Offline"
+      >
+        <h3 class="text-xl mb-5 font-semibold select-none"><i class="fas fa-map-marker-alt"></i> Lokasi Offline</h3>
+        <div class="grid gap-2">
+          <div
+            class="flex items-center gap-2 text-gray-700 text-sm select-none"
+            aria-label="Lokasi Jl. Merdeka No. 123 Jakarta Pusat"
+          >
+            <i class="fas fa-map-marker-alt text-[#3498db]"></i>
+            <strong>Jl. Merdeka No. 123</strong> - Jakarta Pusat
+          </div>
+          <div
+            class="flex items-center gap-2 text-gray-700 text-sm select-none"
+            aria-label="Lokasi Mall Central Park Lt. 5 Food Court"
+          >
+            <i class="fas fa-map-marker-alt text-[#3498db]"></i>
+            <strong>Mall Central Park</strong> - Lt. 5 Food Court
+          </div>
+          <div
+            class="flex items-center gap-2 text-gray-700 text-sm select-none"
+            aria-label="Lokasi Pluit Village Area Gaming Zone"
+          >
+            <i class="fas fa-map-marker-alt text-[#3498db]"></i>
+            <strong>Pluit Village</strong> - Area Gaming Zone
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- History Page -->
+    <section
+      id="historyPage"
+      class="page hidden"
+      aria-label="Riwayat Pembelian"
+      tabindex="-1"
+    >
+      <article
+        class="card bg-white rounded-3xl p-8 shadow-md relative overflow-hidden"
+      >
+        <h2 class="text-2xl mb-6 font-semibold select-none"><i class="fas fa-history"></i> Riwayat Pembelian</h2>
+        <div class="flex justify-end mb-4">
+          <button 
+            id="refreshHistoryBtn"
+            class="bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <i class="fas fa-sync-alt"></i> Refresh Status
+          </button>
+        </div>
+        <div id="historyList" class="grid gap-4" aria-live="polite" aria-relevant="additions"></div>
+      </article>
+    </section>
+  </div>
+
+  <!-- QR Modal -->
+  <div
+    id="qrModal"
+    class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="qrModalTitle"
+  >
+    <div
+      class="modal-content bg-white rounded-3xl p-8 text-center max-w-sm w-full mx-4 relative animate-scaleIn"
+      style="animation: modalIn 0.3s ease forwards"
+    >
+      <h3 id="qrModalTitle" class="text-xl mb-4 font-semibold select-none flex justify-center items-center gap-2">
+        <i class="fas fa-qrcode"></i> Scan QR Pembayaran
+      </h3>
+      <img
+        id="qrImage"
+        src=""
+        alt="QR Code for payment scanning"
+        class="w-64 h-64 mx-auto mb-6 object-contain"
+      />
+      <div
+        id="paymentStatus"
+        class="mb-6 text-lg font-medium select-none"
+        aria-live="polite"
+      ></div>
+      <button
+        id="resendQrisBtn"
+        class="btn-primary bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white font-semibold rounded-xl py-3 px-6 mb-2 transition-transform hover:-translate-y-0.5 hover:shadow-lg hidden"
+        aria-label="Kirim ulang QRIS ke email"
+      >
+        <i class="fas fa-envelope"></i> Kirim Ulang QRIS ke Email
+      </button>
+      <div id="resendMessage" class="text-center text-sm font-medium select-none min-h-[1.25rem]"></div>
+      <button
+        class="btn-primary bg-gradient-to-br from-[#3498db] to-[#2980b9] text-white font-semibold rounded-xl py-3 px-6 transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+        onclick="closeModal()"
+        aria-label="Tutup modal QR pembayaran"
+      >
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <!-- Voucher Modal -->
+  <div
+    id="voucherModal"
+    class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="voucherModalTitle"
+  >
+    <div
+      class="modal-content bg-white rounded-3xl p-8 text-center max-w-sm w-full mx-4 relative animate-scaleIn"
+      style="animation: modalIn 0.3s ease forwards"
+    >
+      <h3 id="voucherModalTitle" class="text-xl mb-4 font-semibold select-none flex justify-center items-center gap-2">
+        <i class="fas fa-ticket-alt"></i> Kode Voucher Anda
+      </h3>
+      <div
+        id="voucherCode"
+        class="text-3xl font-mono font-bold text-[#2ecc71] mb-6 select-all break-words"
+        aria-live="polite"
+      ></div>
+      <button
+        id="resendVoucherBtn"
+        class="btn-primary bg-gradient-to-br from-[#2ecc71] to-[#27ae60] text-white font-semibold rounded-xl py-3 px-6 mb-2 transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+        aria-label="Kirim ulang voucher ke email"
+      >
+        <i class="fas fa-envelope"></i> Kirim Ulang Voucher ke Email
+      </button>
+      <div id="resendVoucherMessage" class="text-center text-sm font-medium select-none min-h-[1.25rem]"></div>
+      <button
+        class="btn-primary bg-gradient-to-br from-[#2ecc71] to-[#27ae60] text-white font-semibold rounded-xl py-3 px-6 transition-transform hover:-translate-y-0.5 hover:shadow-lg"
+        onclick="closeVoucherModal()"
+        aria-label="Tutup modal kode voucher"
+      >
+        Tutup
+      </button>
+    </div>
+  </div>
+
+  <footer class="text-center py-8 text-gray-900 select-none">
+    <p>✨ Dikembangkan dengan <i class="fas fa-heart text-red-500"></i> oleh <strong>OnclDev X ZarCode</strong></p>
+  </footer>
+
+  <script>
+    const API_BASE = 'https://eksone-production.up.railway.app';
+    let currentTransactionId = null;
+    let currentTransactionEmail = null;
+
+    // Page Navigation
+    const pages = {
+      home: document.getElementById('homePage'),
+      history: document.getElementById('historyPage'),
+    };
+
+    const navButtonsContainer = document.getElementById('navButtons');
+
+    // Buttons definitions
+    const btnBuyVoucher = document.createElement('button');
+    btnBuyVoucher.type = 'button';
+    btnBuyVoucher.className = "nav-btn bg-white bg-opacity-10 border border-white border-opacity-20 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-transform hover:bg-[#3498db] hover:shadow-lg hover:-translate-y-0.5";
+    btnBuyVoucher.setAttribute('aria-label', 'Beli Voucher');
+    btnBuyVoucher.innerHTML = '<i class="fas fa-shopping-cart"></i> Beli Voucher';
+    btnBuyVoucher.addEventListener('click', () => showPage('home'));
+
+    const btnHistory = document.createElement('button');
+    btnHistory.type = 'button';
+    btnHistory.className = "nav-btn bg-white bg-opacity-10 border border-white border-opacity-20 text-white px-6 py-3 rounded-xl flex items-center gap-2 transition-transform hover:bg-[#3498db] hover:shadow-lg hover:-translate-y-0.5";
+    btnHistory.setAttribute('aria-label', 'Riwayat');
+    btnHistory.innerHTML = '<i class="fas fa-history"></i> Riwayat';
+    btnHistory.addEventListener('click', () => showPage('history'));
+
+    function updateNavButtons(pageId) {
+      navButtonsContainer.innerHTML = '';
+      if (pageId === 'home') {
+        navButtonsContainer.appendChild(btnHistory);
+      } else if (pageId === 'history') {
+        navButtonsContainer.appendChild(btnBuyVoucher);
+      }
+    }
+
+    function showPage(pageId) {
+      Object.values(pages).forEach((page) => (page.style.display = 'none'));
+      pages[pageId].style.display = 'block';
+      pages[pageId].focus?.();
+
+      updateNavButtons(pageId);
+
+      if (pageId === 'history') loadHistory();
+    }
+
+    // Modal Handling
+    function showModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+      document.getElementById(modalId).classList.add('flex');
+    }
+
+    function closeModal() {
+      document.querySelectorAll('.modal').forEach((modal) => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      });
+      // Reset resend button and payment status text and resend message
+      const resendBtn = document.getElementById('resendQrisBtn');
+      resendBtn.classList.add('hidden');
+      resendBtn.disabled = false;
+      resendBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang QRIS ke Email';
+      document.getElementById('paymentStatus').textContent = '';
+      document.getElementById('resendMessage').textContent = '';
+      currentTransactionId = null;
+      currentTransactionEmail = null;
+    }
+
+    function closeVoucherModal() {
+      const voucherModal = document.getElementById('voucherModal');
+      voucherModal.classList.add('hidden');
+      voucherModal.classList.remove('flex');
+      // Reset resend voucher button and message
+      const resendVoucherBtn = document.getElementById('resendVoucherBtn');
+      resendVoucherBtn.disabled = false;
+      resendVoucherBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang Voucher ke Email';
+      document.getElementById('resendVoucherMessage').textContent = '';
+      currentTransactionId = null;
+      currentTransactionEmail = null;
+    }
+
+    // Purchase Handling
+    const purchaseForm = document.getElementById('purchaseForm');
+    purchaseForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const loader = document.getElementById('loader');
+      const loadText = document.getElementById('loadText');
+      const formData = {
+        type: document.getElementById('duration').value,
+        email: document.getElementById('email').value.trim(),
+      };
+
+      loader.classList.remove('hidden');
+      loadText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/generate-qr`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          currentTransactionId = data.transactionId;
+          currentTransactionEmail = formData.email;
+          showModal('qrModal');
+          const qrImage = document.getElementById('qrImage');
+          qrImage.src = data.qrUrl;
+          qrImage.alt = `QR Code for payment of transaction ${data.transactionId}`;
+          document.getElementById('paymentStatus').textContent = '🔄 Memeriksa status pembayaran...';
+          const resendBtn = document.getElementById('resendQrisBtn');
+          resendBtn.classList.remove('hidden');
+          resendBtn.disabled = false;
+          document.getElementById('resendMessage').textContent = '';
+          checkPaymentStatus();
+          saveToHistory(data);
+        } else {
+          alert(`Error: ${data.error}`);
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan jaringan');
+      } finally {
+        loader.classList.add('hidden');
+        loadText.innerHTML = '<i class="fas fa-credit-card"></i> Bayar Sekarang';
+      }
+    });
+
+    async function checkPaymentStatus() {
+      const statusElement = document.getElementById('paymentStatus');
+      if (!currentTransactionId) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/check-status/${currentTransactionId}`);
+        const data = await response.json();
+
+        if (data.status === 'paid') {
+          statusElement.textContent = '✅ Pembayaran berhasil!';
+          // Perbaikan: Pembaruan status sebelum mendapatkan voucher
+          updateHistoryStatus(currentTransactionId, 'Paid');
+          const voucher = await getVoucher();
+          closeModal();
+          showVoucherModal(voucher);
+        } else if (data.status === 'expired') {
+          statusElement.textContent = '❌ Pembayaran kedaluwarsa';
+          updateHistoryStatus(currentTransactionId, 'Expired');
+        } else {
+          setTimeout(checkPaymentStatus, 3000);
+        }
+      } catch (error) {
+        statusElement.textContent = '⚠️ Gagal memeriksa status';
+      }
+    }
+
+    async function getVoucher() {
+      try {
+        const response = await fetch(`${API_BASE}/api/get-voucher/${currentTransactionId}`);
+        const data = await response.json();
+        // Perbaikan: Update status lagi ketika mendapatkan voucher
+        updateHistoryStatus(currentTransactionId, 'Paid');
+        return data.voucher;
+      } catch (error) {
+        return 'Gagal mendapatkan voucher';
+      }
+    }
+
+    function showVoucherModal(voucherCode) {
+      const voucherModal = document.getElementById('voucherModal');
+      const voucherCodeDiv = document.getElementById('voucherCode');
+      voucherCodeDiv.textContent = voucherCode;
+      showModal('voucherModal');
+    }
+
+    // History Handling
+    function saveToHistory(data) {
+      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      history.push({
+        id: data.transactionId,
+        amount: data.amount,
+        email: data.email,
+        date: new Date().toLocaleString(),
+        status: 'Pending',
+        qrUrl: data.qrUrl
+      });
+      localStorage.setItem('purchaseHistory', JSON.stringify(history));
+      loadHistory();
+    }
+
+    function updateHistoryStatus(transactionId, newStatus) {
+      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      const idx = history.findIndex((item) => item.id === transactionId);
+      if (idx !== -1) {
+        // Perbaikan: Sekarang selalu perbarui status ke Paid jika status baru adalah Paid
+        if (newStatus.toLowerCase() === 'paid') {
+          history[idx].status = 'Paid';
+          localStorage.setItem('purchaseHistory', JSON.stringify(history));
+          loadHistory();
+        } else if (history[idx].status.toLowerCase() !== 'paid') {
+          // Hanya update ke status lain jika belum Paid
+          history[idx].status = newStatus;
+          localStorage.setItem('purchaseHistory', JSON.stringify(history));
+          loadHistory();
+        }
+      }
+    }
+
+    // Perbaikan: Tambah fungsi untuk memeriksa status semua transaksi secara terpisah
+    async function checkAllTransactionsStatus() {
+      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      const pendingTransactions = history.filter(item => item.status.toLowerCase() === 'pending');
+      
+      for (const transaction of pendingTransactions) {
+        try {
+          const response = await fetch(`${API_BASE}/api/check-status/${transaction.id}`);
+          const data = await response.json();
+          
+          if (data.status === 'paid') {
+            updateHistoryStatus(transaction.id, 'Paid');
+          } else if (data.status === 'expired') {
+            updateHistoryStatus(transaction.id, 'Expired');
+          }
+        } catch (error) {
+          console.error(`Error checking status for transaction ${transaction.id}:`, error);
+        }
+      }
+      
+      // Refresh the history display after checking all transactions
+      loadHistory();
+    }
+
+    // Perbaikan: Cek status transaksi pending saat halaman riwayat dimuat
+    async function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      const historyList = document.getElementById('historyList');
+
+      if (history.length === 0) {
+        historyList.innerHTML =
+          '<p class="text-center text-gray-500 select-none">Belum ada riwayat pembelian.</p>';
+        return;
+      }
+
+      historyList.innerHTML = history
+        .map(
+          (item) => `
+          <div
+            class="history-item bg-gray-100 p-4 rounded-xl flex justify-between items-center hover:bg-sky-100"
+            role="listitem"
+            aria-label="Transaksi ${item.id} dengan email ${item.email} dan status ${item.status}"
+            data-id="${item.id}"
+            data-status="${item.status}"
+            data-qrurl="${item.qrUrl || ''}"
+            data-email="${item.email}"
+          >
+            <div>
+              <strong class="block text-lg">${item.id}</strong>
+              <span class="text-sm text-gray-600">${item.email} - Rp ${item.amount}</span>
+              <time class="block text-xs text-gray-500 mt-1">${item.date}</time>
+            </div>
+            <div class="font-semibold select-none" style="color: ${getStatusColor(item.status)};">
+              ${item.status}
+            </div>
+          </div>
+        `
+        )
+        .join('');
+
+      document.querySelectorAll('.history-item').forEach((el) => {
+        el.addEventListener('click', async () => {
+          const status = el.getAttribute('data-status').toLowerCase();
+          const transactionId = el.getAttribute('data-id');
+          const email = el.getAttribute('data-email');
+          
+          // Perbaikan: Periksa status terbaru saat item diklik
+          if (status === 'pending') {
+            try {
+              const statusResponse = await fetch(`${API_BASE}/api/check-status/${transactionId}`);
+              const statusData = await statusResponse.json();
+              
+              if (statusData.status === 'paid') {
+                // Jika sudah dibayar tapi status di UI masih pending, update dan tampilkan voucher
+                updateHistoryStatus(transactionId, 'Paid');
+                const voucher = await fetchVoucherForHistory(transactionId);
+                if (voucher) {
+                  currentTransactionId = transactionId;
+                  currentTransactionEmail = email;
+                  showVoucherModal(voucher);
+                  return;
+                }
+              }
+            } catch (error) {
+              console.error("Error checking status:", error);
+            }
+            
+            // Jika belum dibayar atau gagal cek status, tampilkan QR Code
+            const qrUrl = el.getAttribute('data-qrurl');
+            if (qrUrl) {
+              currentTransactionId = transactionId;
+              currentTransactionEmail = email;
+              showModal('qrModal');
+              const qrImage = document.getElementById('qrImage');
+              qrImage.src = qrUrl;
+              qrImage.alt = `QR Code for payment of transaction ${currentTransactionId}`;
+              const paymentStatus = document.getElementById('paymentStatus');
+              paymentStatus.textContent = '🔄 Memeriksa status pembayaran...';
+              const resendBtn = document.getElementById('resendQrisBtn');
+              resendBtn.classList.remove('hidden');
+              resendBtn.disabled = false;
+              document.getElementById('resendMessage').textContent = '';
+              checkPaymentStatus();
+            } else {
+              alert('QR Code tidak tersedia untuk transaksi ini.');
+            }
+          } else if (status === 'paid') {
+            currentTransactionId = transactionId;
+            currentTransactionEmail = email;
+            const voucher = await fetchVoucherForHistory(transactionId);
+            if (voucher) {
+              showVoucherModal(voucher);
+              document.getElementById('resendVoucherMessage').textContent = '';
+            } else {
+              alert('Gagal mendapatkan kode voucher.');
+            }
+          } else if (status === 'expired') {
+            // Do nothing on click for expired transactions as requested
+          }
+        });
+      });
+    }
+
+    async function fetchVoucherForHistory(transactionId) {
+      try {
+        const response = await fetch(`${API_BASE}/api/get-voucher/${transactionId}`);
+        if (!response.ok) return null;
+        const data = await response.json();
+        
+        // Perbaikan: Update status saat voucher berhasil diambil
+        if (data.voucher) {
+          updateHistoryStatus(transactionId, 'Paid');
+        }
+        
+        return data.voucher || null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getStatusColor(status) {
+      switch (status.toLowerCase()) {
+        case 'paid':
+          return '#2ecc71';
+        case 'expired':
+          return '#e74c3c';
+        default:
+          return '#f1c40f';
+      }
+    }
+
+    // Resend QRIS Email Button Handling
+    const resendQrisBtn = document.getElementById('resendQrisBtn');
+    const resendMessage = document.getElementById('resendMessage');
+    resendQrisBtn.addEventListener('click', async () => {
+      if (!currentTransactionId) return;
+      resendQrisBtn.disabled = true;
+      resendQrisBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim ulang...';
+      resendMessage.textContent = '';
+      resendMessage.classList.remove('text-green-600', 'text-red-600');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/resend-qris-email/${currentTransactionId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          resendMessage.textContent = 'Berhasil kirim qris ke email';
+          resendMessage.classList.add('text-green-600');
+        } else {
+          resendMessage.textContent = 'Gagal mengirim qris ke email';
+          resendMessage.classList.add('text-red-600');
+        }
+      } catch (error) {
+        resendMessage.textContent = 'Gagal mengirim qris ke email';
+        resendMessage.classList.add('text-red-600');
+      } finally {
+        resendQrisBtn.disabled = false;
+        resendQrisBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang QRIS ke Email';
+      }
+    });
+  
+    // Resend Voucher Email Button Handling
+    const resendVoucherBtn = document.getElementById('resendVoucherBtn');
+    const resendVoucherMessage = document.getElementById('resendVoucherMessage');
+    resendVoucherBtn.addEventListener('click', async () => {
+      if (!currentTransactionId) return;
+      resendVoucherBtn.disabled = true;
+      resendVoucherBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim ulang...';
+      resendVoucherMessage.textContent = '';
+      resendVoucherMessage.classList.remove('text-green-600', 'text-red-600');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/resend-voucher-email/${currentTransactionId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          resendVoucherMessage.textContent = 'Berhasil kirim voucher ke email';
+          resendVoucherMessage.classList.add('text-green-600');
+        } else {
+          resendVoucherMessage.textContent = 'Gagal mengirim voucher ke email';
+          resendVoucherMessage.classList.add('text-red-600');
+        }
+      } catch (error) {
+        resendVoucherMessage.textContent = 'Gagal mengirim voucher ke email';
+        resendVoucherMessage.classList.add('text-red-600');
+      } finally {
+        resendVoucherBtn.disabled = false;
+        resendVoucherBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang Voucher ke Email';
+      }
+    });
+
+    // Initial Load
+    loadHistory();
+    showPage('home');
+  </script>
+</body>
+</html>
