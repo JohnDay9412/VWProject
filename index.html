@@ -1,125 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html @keydown.window.escape="sidebarOpen = false" class="scroll-smooth" lang="en" style="scroll-behavior:smooth" x-data="{ sidebarOpen: false, currentPage: 'home' }">
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1" name="viewport"/>
   <title>OneClash WiFi Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
   <style>
     body {
-      font-family: 'Roboto Mono', monospace;
-      background-color: #ffffff;
-      color: #0f172a;
-    }
-    .nav-btn {
-      background-color: transparent;
-      border: 2px solid #3b82f6;
-      color: #3b82f6;
-      font-weight: 700;
-      transition: all 0.3s ease;
-      border-radius: 0.75rem;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .nav-btn:hover, .nav-btn:focus {
-      background: #3b82f6;
-      color: #ffffff;
-      box-shadow: 0 0 10px #3b82f6;
-      outline: none;
-      transform: translateY(-3px);
-    }
-    .btn-primary {
-      background: linear-gradient(90deg, #2563eb, #1e40af);
-      box-shadow: 0 4px 15px rgb(37 99 235 / 0.6);
-      font-weight: 700;
-      transition: all 0.3s ease;
-      color: white;
-      border-radius: 0.75rem;
-      padding-left: 1.25rem;
-      padding-right: 1.25rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-    }
-    .btn-primary:hover, .btn-primary:focus {
-      background: linear-gradient(90deg, #1e40af, #2563eb);
-      box-shadow: 0 6px 20px rgb(37 99 235 / 0.8);
-      outline: none;
-      transform: translateY(-3px);
-      color: white;
-    }
-    .card {
-      background: #f9fafb;
-      border-radius: 1.5rem;
-      box-shadow: 0 8px 30px rgb(59 130 246 / 0.1);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid #3b82f6;
-      color: #0f172a;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -60%;
-      left: -60%;
-      width: 220%;
-      height: 220%;
-      background: linear-gradient(135deg, transparent 30%, #3b82f6 50%, transparent 70%);
-      transform: rotate(25deg);
-      opacity: 0.07;
-      pointer-events: none;
-      z-index: 0;
-      animation: shimmer 6s linear infinite;
-    }
-    @keyframes shimmer {
-      0% {
-        transform: rotate(25deg) translateX(-100%);
-      }
-      100% {
-        transform: rotate(25deg) translateX(100%);
-      }
-    }
-    .history-item {
-      background: #f3f4f6;
-      border: 2px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1rem 1.5rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #0f172a;
-    }
-    .history-item:hover, .history-item:focus {
-      background: #f3f4f6;
-      color: #0f172a;
-      box-shadow: none;
-      outline: none;
-      transform: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-    }
-    footer {
-      color: #64748b;
-      font-weight: 500;
-      user-select: none;
-    }
-    footer i {
-      color: #ef4444;
+      font-family: "Roboto", sans-serif;
+      background-color: #0f172a;
+      color: #e0e7ff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     #historyList {
-      max-height: 400px;
-      overflow-y: auto;
       scrollbar-width: thin;
-      scrollbar-color: #3b82f6 transparent;
+      scrollbar-color: #2563eb transparent;
     }
     #historyList::-webkit-scrollbar {
       width: 8px;
@@ -128,583 +27,487 @@
       background: transparent;
     }
     #historyList::-webkit-scrollbar-thumb {
-      background-color: #3b82f6;
+      background-color: #2563eb;
       border-radius: 4px;
     }
-    .modal-content {
-      background: #f9fafb;
-      border-radius: 1.5rem;
-      box-shadow: 0 10px 40px rgb(37 99 235 / 0.15);
-      color: #0f172a;
-      max-width: 400px;
-      width: 100%;
-      padding: 2rem;
-      position: relative;
+    @keyframes shimmer {
+      0% { transform: rotate(25deg) translateX(-100%); }
+      100% { transform: rotate(25deg) translateX(100%); }
     }
-    .modal-content h3 {
-      font-weight: 700;
-      font-size: 1.25rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.75rem;
-      color: #2563eb;
+    @keyframes modalIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
     }
-    .modal-content button {
-      width: 100%;
+    .animate-scaleIn {
+      animation: modalIn 0.3s ease forwards;
     }
-    .modal-content img {
-      border-radius: 1rem;
-      border: 2px solid #3b82f6;
-      box-shadow: 0 0 15px #3b82f6;
-    }
-    .select-all {
-      user-select: all;
-    }
-    .location-text {
-      font-size: 0.75rem;
-      color: #475569;
-      font-weight: 500;
-    }
-    .nav-btn.rounded-corners {
-      border-radius: 0.75rem;
-    }
-    @media (max-width: 640px) {
-      nav {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      .history-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-      }
-      .history-item > div:last-child {
-        align-self: flex-end;
-      }
-    }
-
-    /* New styles for radio dropdown and email input */
-    @keyframes slideIn {
-      from {
-        transform: translateY(-10px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-    .duration-dropdown {
-      position: relative;
-    }
-    .duration-options {
-      position: absolute;
-      width: 100%;
-      margin-top: 0.5rem;
-      border-radius: 1rem;
-      background: white;
-      border: 2px solid #3b82f6;
-      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      z-index: 50;
-      max-height: 24rem;
-      overflow-y: auto;
-      animation: slideIn 0.2s ease-out;
-    }
-    .duration-option {
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      max-width: 350px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       display: flex;
       align-items: center;
-      padding: 1rem;
-      cursor: pointer;
-      transition: background-color 0.2s;
+      gap: 12px;
+      transform: translateX(150%);
+      transition: transform 0.3s ease-out;
     }
-    .duration-option:hover {
-      background-color: #f0f9ff;
+    .toast.show {
+      transform: translateX(0);
     }
-    .duration-option.selected {
-      background-color: #e0f2fe;
-    }
-    .custom-radio {
-      width: 1.5rem;
-      height: 1.5rem;
-      border: 2px solid #3b82f6;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 1rem;
-      flex-shrink: 0;
-    }
-    .custom-radio-inner {
-      width: 0.75rem;
-      height: 0.75rem;
-      background-color: #3b82f6;
-      border-radius: 9999px;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .duration-option.selected .custom-radio-inner {
-      opacity: 1;
-    }
-    .duration-label {
-      font-weight: 600;
-      color: #1e3a8a;
-    }
-    .duration-price {
-      font-size: 0.875rem;
-      color: #3b82f6;
-    }
-    .dropdown-button {
-      width: 100%;
-      border-radius: 0.75rem;
-      border: 2px solid #3b82f6;
-      background: white;
-      padding: 1rem 1.25rem;
-      font-weight: 600;
-      text-align: left;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-    .dropdown-button:hover {
-      border-color: #2563eb;
-    }
-    .dropdown-button:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-      border-color: #2563eb;
-    }
-    .dropdown-icon {
-      transition: transform 0.2s;
-    }
-    .dropdown-icon.open {
-      transform: rotate(180deg);
-    }
-
-    /* Improved email input style */
-    .email-input {
-      width: 100%;
-      border-radius: 0.75rem;
-      border: 2px solid #3b82f6;
-      background: white;
-      padding: 1rem 1.25rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      font-size: 1rem;
-    }
-    .email-input::placeholder {
-      color: #94a3b8;
-      font-weight: 500;
-    }
-    .email-input:hover {
-      border-color: #2563eb;
-    }
-    .email-input:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-      border-color: #2563eb;
-    }
-
-    /* Resend buttons style to match nav buttons */
-    .resend-btn {
-      background-color: transparent;
-      border: 2px solid #3b82f6;
-      color: #3b82f6;
-      font-weight: 700;
-      transition: all 0.3s ease;
-      border-radius: 0.75rem;
-      padding: 0.75rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-    .resend-btn:hover, .resend-btn:focus {
-      background: #3b82f6;
-      color: #ffffff;
-      box-shadow: 0 0 10px #3b82f6;
-      outline: none;
-      transform: translateY(-3px);
-    }
-    .resend-btn i {
-      transition: transform 0.3s ease;
-    }
-    .resend-btn:hover i, .resend-btn:focus i {
-      transform: scale(1.1);
-    }
-
-    /* New styles for action buttons */
-    .action-btn {
-      background-color: transparent;
-      border: 2px solid #3b82f6;
-      color: #3b82f6;
-      font-weight: 700;
-      transition: all 0.3s ease;
-      border-radius: 0.5rem;
-      padding: 0.5rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 0.875rem;
-      margin-left: 0.5rem;
-    }
-    .action-btn:hover, .action-btn:focus {
-      background: #3b82f6;
-      color: #ffffff;
-      box-shadow: 0 0 5px #3b82f6;
-      outline: none;
-    }
-    .action-btn.copy-btn {
-      border-color: #10b981;
-      color: #10b981;
-    }
-    .action-btn.copy-btn:hover, .action-btn.copy-btn:focus {
+    .toast.success {
       background: #10b981;
-      color: #ffffff;
-      box-shadow: 0 0 5px #10b981;
+      color: white;
     }
-    .status-badge {
-      font-weight: 600;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.875rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
+    .toast.error {
+      background: #ef4444;
+      color: white;
     }
-    .status-badge.pending {
-      background-color: #fef3c7;
-      color: #d97706;
+    .toast.warning {
+      background: #f59e0b;
+      color: white;
     }
-    .status-badge.paid {
-      background-color: #d1fae5;
-      color: #059669;
-    }
-    .status-badge.expired {
-      background-color: #fee2e2;
-      color: #dc2626;
-    }
-    .history-content {
-      flex-grow: 1;
-    }
-    .history-actions {
-      display: flex;
-      align-items: center;
-    }
-
-    /* Adjusted heading sizes */
-    .section-heading {
+    .toast i {
       font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .refresh-btn {
-      font-size: 0.875rem;
     }
   </style>
 </head>
-<body>
-  <div class="max-w-5xl mx-auto px-5 py-8">
-    <nav aria-label="Primary Navigation" class="rounded-2xl mb-10 shadow-lg flex flex-col md:flex-row md:justify-between md:items-center p-5 gap-4 border border-[#3b82f6]">
-      <div aria-label="OneClash Store Logo" class="text-[#3b82f6] text-2xl font-extrabold flex items-center gap-3 select-none">
-        <img alt="Blue WiFi signal icon with modern style" class="w-10 h-10" height="40" src="https://storage.googleapis.com/a1aa/image/580b01e3-79b8-4d53-6a75-b6018e439e9b.jpg" width="40"/>
-        <span>OneClash Store</span>
+<body class="min-h-screen flex flex-col relative">
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden">
+    <i id="toastIcon"></i>
+    <div>
+      <div id="toastMessage" class="font-semibold"></div>
+    </div>
+  </div>
+  
+  <!-- Sidebar Overlay -->
+  <div @click="sidebarOpen = false" aria-hidden="true" class="fixed inset-0 bg-black bg-opacity-70 z-40 md:hidden" x-show="sidebarOpen" x-transition.opacity=""></div>
+  
+  <!-- Sidebar -->
+  <aside @keydown.shift.tab.prevent="$event.preventDefault()" @keydown.tab.prevent="$event.shiftKey || $event.preventDefault()" aria-label="Sidebar Navigation" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-black/90 to-blue-900/90 border-r border-blue-600 shadow-lg z-50 flex flex-col" x-show="sidebarOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-end="translate-x-0" x-transition:enter-start="-translate-x-full" x-transition:leave="transition ease-in duration-300" x-transition:leave-end="-translate-x-full" x-transition:leave-start="translate-x-0">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-blue-600">
+      <div class="text-blue-500 text-3xl font-extrabold flex items-center gap-3 select-none tracking-wide">
+        <img alt="Blue WiFi signal icon with modern style, glowing effect" class="w-10 h-10 drop-shadow-lg" decoding="async" height="40" loading="lazy" src="https://storage.googleapis.com/a1aa/image/7d4949d8-9920-46e9-323d-b5e3e9739e37.jpg" width="40"/>
+        <span class="uppercase tracking-widest drop-shadow-md text-lg">OneClash Store</span>
       </div>
-      <div aria-label="Navigation Buttons" class="flex flex-wrap gap-4 justify-center md:justify-start" id="navButtons" role="navigation"></div>
+      <button @click="sidebarOpen = false" aria-label="Close sidebar" class="text-blue-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-1">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    <nav aria-orientation="vertical" class="flex-1 overflow-y-auto py-6 px-4 space-y-2" role="menu" tabindex="0">
+      <button :class="currentPage === 'home' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'home'; sidebarOpen = false" aria-current="page" class="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500 transition" role="menuitem">
+        <i class="fas fa-credit-card"></i>
+        Pembayaran
+      </button>
+      <button :class="currentPage === 'history' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'history'; sidebarOpen = false" class="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500 transition" role="menuitem">
+        <i class="fas fa-history"></i>
+        Riwayat
+      </button>
+      <button :class="currentPage === 'faq' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'faq'; sidebarOpen = false" class="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500 transition" role="menuitem">
+        <i class="fas fa-question-circle"></i>
+        FAQ
+      </button>
+      <button :class="currentPage === 'info' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'info'; sidebarOpen = false" class="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500 transition" role="menuitem">
+        <i class="fas fa-info-circle"></i>
+        Info
+      </button>
+      <button :class="currentPage === 'customerService' ? 'bg-blue-700 text-white' : 'text-blue-300 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'customerService'; sidebarOpen = false" class="w-full text-left rounded-xl px-4 py-3 flex items-center gap-3 font-semibold focus:outline-none focus:ring-4 focus:ring-blue-500 transition" role="menuitem">
+        <i class="fas fa-headset"></i>
+        Customer Services
+      </button>
     </nav>
+  </aside>
 
-    <!-- Home Page -->
-    <section aria-label="Halaman Beli Voucher" class="page block space-y-10" id="homePage" tabindex="-1">
-      <article aria-label="Pilih Paket WiFi" class="card p-8 relative">
-        <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-[#2563eb]">
-          <i class="fas fa-gift"></i>
-          Pilih Paket WiFi
-        </h2>
-        <form class="space-y-8" id="purchaseForm" novalidate="">
-          <div class="relative">
-            <label class="block mb-3 text-lg font-semibold select-none text-[#2563eb]" for="duration">
-              <i class="fas fa-calendar-alt"></i>
-              Durasi Paket
-            </label>
-
-            <!-- Improved Radio Dropdown -->
-            <div class="duration-dropdown" x-data="{
-              open: false,
-              selected: '1',
-              options: [
-                { value: '1', label: '6 Jam', price: 'Rp 20,000' },
-                { value: '2', label: '12 Jam', price: 'Rp 30,000' },
-                { value: '3', label: '3 Hari', price: 'Rp 60,000' },
-                { value: '4', label: '7 Hari', price: 'Rp 100,000' },
-                { value: '5', label: '30 Hari', price: 'Rp 350,000' }
-              ],
-              get selectedOption() {
-                return this.options.find(opt => opt.value === this.selected);
-              }
-            }">
-              <button 
-                @click="open = !open"
-                type="button"
-                class="dropdown-button"
-                aria-haspopup="listbox"
-                :aria-expanded="open"
-              >
+  <!-- Main content wrapper -->
+  <div class="flex flex-col flex-grow max-w-5xl mx-auto px-6 py-8">
+    <!-- Top Navbar -->
+    <nav aria-label="Primary Navigation" class="rounded-3xl mb-8 shadow-xl flex items-center justify-between p-4 border border-blue-600 bg-gradient-to-r from-black/80 to-blue-900/80 backdrop-blur-md md:hidden">
+      <button @click="sidebarOpen = true" aria-label="Open sidebar" class="text-blue-400 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 rounded-md p-2">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
+      <div aria-label="OneClash Store Logo" class="text-blue-500 text-3xl font-extrabold flex items-center gap-4 select-none tracking-wide">
+        <img alt="Blue WiFi signal icon with modern style, glowing effect" class="w-10 h-10 drop-shadow-lg" decoding="async" height="40" loading="lazy" src="https://storage.googleapis.com/a1aa/image/7d4949d8-9920-46e9-323d-b5e3e9739e37.jpg" width="40"/>
+        <span class="uppercase tracking-widest drop-shadow-md text-lg">OneClash Store</span>
+      </div>
+      <div class="w-8"></div>
+    </nav>
+    
+    <!-- Desktop Navigation Buttons -->
+    <nav aria-label="Primary Navigation" class="hidden md:flex rounded-3xl mb-12 shadow-xl justify-center gap-6 border border-blue-600 bg-gradient-to-r from-black/80 to-blue-900/80 backdrop-blur-md p-6">
+      <button :class="currentPage === 'home' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'home'" aria-current="page" aria-label="Pembayaran" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
+        <i class="fas fa-credit-card"></i>
+        Pembayaran
+      </button>
+      <button :class="currentPage === 'history' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'history'" aria-label="Riwayat" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
+        <i class="fas fa-history"></i>
+        Riwayat
+      </button>
+      <button :class="currentPage === 'faq' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'faq'" aria-label="FAQ" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
+        <i class="fas fa-question-circle"></i>
+        FAQ
+      </button>
+      <button :class="currentPage === 'info' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'info'" aria-label="Info" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
+        <i class="fas fa-info-circle"></i>
+        Info
+      </button>
+      <button :class="currentPage === 'customerService' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'customerService'" aria-label="Customer Services" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
+        <i class="fas fa-headset"></i>
+        Customer Services
+      </button>
+    </nav>
+    
+    <!-- Pages -->
+    <main class="flex-grow">
+      <!-- Pembayaran Page -->
+      <section aria-label="Halaman Beli Voucher" class="page block space-y-12" tabindex="-1" x-show="currentPage === 'home'" x-transition="">
+        <article aria-label="Pilih Paket WiFi" class="relative rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
+          <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-blue-400 text-2xl drop-shadow-md">
+            <i class="fas fa-gift"></i>
+            Pilih Paket WiFi
+          </h2>
+          <form class="space-y-10 mt-8" id="purchaseForm" novalidate="">
+            <div class="relative" x-data="{
+                  open: false,
+                  selected: '1',
+                  options: [
+                    { value: '1', label: '6 Jam', price: 'Rp 20,000' },
+                    { value: '2', label: '12 Jam', price: 'Rp 30,000' },
+                    { value: '3', label: '3 Hari', price: 'Rp 60,000' },
+                    { value: '4', label: '7 Hari', price: 'Rp 100,000' },
+                    { value: '5', label: '30 Hari', price: 'Rp 350,000' }
+                  ],
+                  get selectedOption() {
+                    return this.options.find(opt => opt.value === this.selected);
+                  }
+                }">
+              <label class="block mb-4 text-xl font-semibold select-none text-blue-400 flex items-center gap-3" for="duration">
+                <i class="fas fa-calendar-alt"></i>
+                Durasi Paket
+              </label>
+              <button :aria-expanded="open" @click="open = !open" aria-haspopup="listbox" class="w-full rounded-xl border-2 border-blue-600 bg-black/70 py-4 px-5 font-semibold text-blue-300 flex justify-between items-center shadow-md hover:bg-blue-900/80 focus:outline-none focus:ring-4 focus:ring-blue-500 transition" type="button">
                 <span x-text="selectedOption ? selectedOption.label : 'Pilih Durasi'"></span>
-                <i class="fas fa-chevron-down text-[#3b82f6] dropdown-icon" :class="{ 'open': open }"></i>
+                <i :class="{ 'rotate-180': open }" class="fas fa-chevron-down text-blue-500 transition-transform duration-200"></i>
               </button>
-
-              <div 
-                x-show="open"
-                class="duration-options"
-                role="listbox"
-                @click.outside="open = false"
-              >
-                <template x-for="option in options" :key="option.value">
-                  <div 
-                    @click="selected = option.value; open = false"
-                    class="duration-option"
-                    :class="{ 'selected': selected === option.value }"
-                    role="option"
-                    :aria-selected="selected === option.value"
-                  >
-                    <div class="custom-radio">
-                      <div class="custom-radio-inner"></div>
+              <div @click.outside="open = false" class="duration-options absolute z-50 mt-2 w-full rounded-2xl bg-gradient-to-b from-black/90 to-blue-900/90 border-2 border-blue-600 shadow-lg max-h-96 overflow-y-auto" role="listbox" x-show="open" x-transition="">
+                <template :key="option.value" x-for="option in options">
+                  <div :aria-selected="selected === option.value" :class="{ 'bg-blue-700/80': selected === option.value }" @click="selected = option.value; open = false" class="duration-option flex items-center gap-4 px-6 py-4 cursor-pointer transition-colors duration-200 hover:bg-blue-700/70" role="option">
+                    <div class="custom-radio w-6 h-6 border-2 border-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div :class="{ 'opacity-100': selected === option.value }" class="custom-radio-inner w-3.5 h-3.5 bg-blue-500 rounded-full opacity-0 transition-opacity duration-200"></div>
                     </div>
                     <div>
-                      <div class="duration-label" x-text="option.label"></div>
-                      <div class="duration-price" x-text="option.price"></div>
+                      <div class="duration-label font-semibold text-blue-300" x-text="option.label"></div>
+                      <div class="duration-price text-blue-400 text-sm" x-text="option.price"></div>
                     </div>
                   </div>
                 </template>
               </div>
-
-              <input type="hidden" name="duration" id="duration" x-model="selected">
+              <input id="duration" name="duration" type="hidden" x-model="selected"/>
+            </div>
+            <div>
+              <label class="block mb-4 text-xl font-semibold select-none text-blue-400 flex items-center gap-3" for="email">
+                <i class="fas fa-envelope"></i>
+                Email Pembeli
+              </label>
+              <input aria-describedby="emailHelp" autocomplete="email" class="email-input w-full rounded-xl border-2 border-blue-600 bg-black/70 py-4 px-5 font-semibold text-blue-300 placeholder-blue-500 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 transition" id="email" placeholder="contoh@email.com" required="" type="email"/>
+              <p class="mt-2 text-sm text-blue-300 font-medium select-none" id="emailHelp">
+                Pastikan email Anda benar untuk menerima voucher.
+              </p>
+            </div>
+            <button aria-live="polite" class="btn-primary w-full py-5 flex justify-center items-center gap-4 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-900 shadow-lg font-extrabold text-white hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-500 transition-transform active:scale-95" type="submit">
+              <span class="flex items-center gap-3 text-lg" id="loadText">
+                <i class="fas fa-credit-card"></i>
+                Bayar Sekarang
+              </span>
+              <div aria-hidden="true" class="loader border-4 border-white border-t-transparent rounded-full w-7 h-7 hidden" id="loader"></div>
+            </button>
+          </form>
+        </article>
+      </section>
+      
+      <!-- Riwayat Page -->
+      <section aria-label="Riwayat Pembelian" class="page" tabindex="-1" x-show="currentPage === 'history'" x-transition="">
+        <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10 relative">
+          <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-blue-400 text-2xl drop-shadow-md">
+            <i class="fas fa-history"></i>
+            Riwayat Pembelian
+          </h2>
+          <div class="flex justify-end mb-8">
+            <button aria-label="Refresh Status Riwayat" class="nav-btn rounded-2xl px-8 py-3 flex items-center gap-4 bg-transparent border-2 border-blue-600 text-blue-400 font-semibold shadow-md hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 transition" id="refreshHistoryBtn">
+              <i class="fas fa-sync-alt"></i>
+              Refresh Status
+            </button>
+          </div>
+          <div aria-live="polite" aria-relevant="additions" class="grid gap-5 max-h-[400px] overflow-y-auto" id="historyList" role="list"></div>
+        </article>
+      </section>
+      
+      <!-- FAQ Page -->
+      <section aria-label="Frequently Asked Questions" class="page" tabindex="-1" x-show="currentPage === 'faq'" x-transition="">
+        <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
+          <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-blue-400 text-2xl drop-shadow-md mb-8">
+            <i class="fas fa-question-circle"></i>
+            FAQ
+          </h2>
+          <div class="space-y-6 text-blue-300 text-base font-medium">
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Bagaimana cara membeli voucher WiFi?</h3>
+              <p>Pilih paket durasi yang Anda inginkan, masukkan email Anda, lalu klik "Bayar Sekarang". Anda akan menerima QR Code untuk pembayaran.</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Metode pembayaran apa yang diterima?</h3>
+              <p>Kami menerima pembayaran melalui QRIS yang dapat dipindai menggunakan aplikasi pembayaran digital populer di Indonesia.</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Bagaimana jika saya tidak menerima voucher setelah pembayaran?</h3>
+              <p>Pastikan email yang Anda masukkan benar. Jika belum menerima, Anda dapat menghubungi Customer Services kami untuk bantuan.</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Berapa lama voucher berlaku?</h3>
+              <p>Voucher berlaku sesuai dengan durasi paket yang Anda pilih, mulai dari 6 jam hingga 30 hari.</p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Bisakah saya melihat riwayat pembelian saya?</h3>
+              <p>Ya, Anda dapat melihat riwayat pembelian pada halaman Riwayat di aplikasi ini.</p>
             </div>
           </div>
-
-          <div>
-            <label class="block mb-3 text-lg font-semibold select-none text-[#2563eb]" for="email">
-              <i class="fas fa-envelope"></i>
-              Email Pembeli
-            </label>
-            <!-- Improved Email Input -->
-            <input 
-              aria-describedby="emailHelp" 
-              autocomplete="email" 
-              class="email-input" 
-              id="email" 
-              placeholder="contoh@email.com" 
-              required="" 
-              type="email"
-            />
-            <p class="mt-1 location-text select-none" id="emailHelp">
-              Pastikan email Anda benar untuk menerima voucher.
-            </p>
+        </article>
+      </section>
+      
+      <!-- Info Page -->
+      <section aria-label="Informasi" class="page" tabindex="-1" x-show="currentPage === 'info'" x-transition="">
+        <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
+          <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-blue-400 text-2xl drop-shadow-md mb-8">
+            <i class="fas fa-info-circle"></i>
+            Informasi
+          </h2>
+          <div class="space-y-6 text-blue-300 text-base font-medium">
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Lokasi Offline Kami</h3>
+              <div class="space-y-4">
+                <div aria-label="Lokasi Jl. Merdeka No. 123 Jakarta Pusat" class="flex items-start gap-3">
+                  <i class="fas fa-map-marker-alt text-blue-400 mt-1"></i>
+                  <div>
+                    <strong class="text-white">Jl. Merdeka No. 123</strong>
+                    <div class="text-blue-400">Jakarta Pusat</div>
+                  </div>
+                </div>
+                <div aria-label="Lokasi Mall Central Park Lt. 5 Food Court" class="flex items-start gap-3">
+                  <i class="fas fa-map-marker-alt text-blue-400 mt-1"></i>
+                  <div>
+                    <strong class="text-white">Mall Central Park</strong>
+                    <div class="text-blue-400">Lt. 5 Food Court</div>
+                  </div>
+                </div>
+                <div aria-label="Lokasi Pluit Village Area Gaming Zone" class="flex items-start gap-3">
+                  <i class="fas fa-map-marker-alt text-blue-400 mt-1"></i>
+                  <div>
+                    <strong class="text-white">Pluit Village</strong>
+                    <div class="text-blue-400">Area Gaming Zone</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Jam Operasional</h3>
+              <p>
+                Senin - Jumat: 09:00 - 18:00 WIB<br>
+                Sabtu: 10:00 - 15:00 WIB<br>
+                Minggu & Hari Libur: Tutup
+              </p>
+            </div>
+            <div>
+              <h3 class="font-semibold text-blue-400 mb-2">Kontak Darurat</h3>
+              <p>
+                Untuk masalah teknis di luar jam operasional, silakan hubungi:<br>
+                <a href="tel:+6281234567890" class="text-blue-400 hover:underline">+62 812 3456 7890</a> (24 jam)
+              </p>
+            </div>
           </div>
-
-          <button aria-live="polite" class="btn-primary w-full py-5 flex justify-center items-center gap-4 rounded-xl" type="submit">
-            <span id="loadText">
-              <i class="fas fa-credit-card"></i>
-              Bayar Sekarang
-            </span>
-            <div aria-hidden="true" class="loader border-4 border-white border-t-transparent rounded-full w-7 h-7 hidden" id="loader"></div>
-          </button>
-        </form>
-      </article>
-
-      <article aria-label="Lokasi Offline" class="card p-8 relative">
-        <h3 class="section-heading font-extrabold select-none flex items-center gap-3 text-[#2563eb]">
-          <i class="fas fa-map-marker-alt"></i>
-          Lokasi Offline
-        </h3>
-        <div class="grid gap-4 text-[#475569] text-sm font-medium select-none">
-          <div aria-label="Lokasi Jl. Merdeka No. 123 Jakarta Pusat" class="flex items-center gap-3 location-text">
-            <i class="fas fa-map-marker-alt text-[#3b82f6]"></i>
-            <strong>Jl. Merdeka No. 123</strong> - Jakarta Pusat
+        </article>
+      </section>
+      
+      <!-- Customer Services Page -->
+      <section aria-label="Customer Services" class="page" tabindex="-1" x-show="currentPage === 'customerService'" x-transition="">
+        <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
+          <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-blue-400 text-2xl drop-shadow-md mb-8">
+            <i class="fas fa-headset"></i>
+            Customer Services
+          </h2>
+          <div class="space-y-6 text-blue-300 text-base font-medium">
+            <p>Jika Anda membutuhkan bantuan lebih lanjut, silakan hubungi kami melalui salah satu cara berikut:</p>
+            <ul class="list-disc list-inside space-y-2">
+              <li>
+                <strong>Email:</strong>
+                <a class="text-blue-400 hover:underline" href="mailto:support@oneclashstore.com">support@oneclashstore.com</a>
+              </li>
+              <li>
+                <strong>Telepon:</strong>
+                <a class="text-blue-400 hover:underline" href="tel:+622112345678">+62 21 1234 5678</a>
+              </li>
+              <li>
+                <strong>WhatsApp:</strong>
+                <a class="text-blue-400 hover:underline" href="https://wa.me/6281234567890" rel="noopener" target="_blank">+62 812 3456 7890</a>
+              </li>
+              <li>
+                <strong>Jam Operasional:</strong>
+                Senin - Jumat, 09:00 - 18:00 WIB
+              </li>
+            </ul>
+            <p>Kami siap membantu Anda dengan segala pertanyaan dan masalah terkait pembelian voucher WiFi.</p>
           </div>
-          <div aria-label="Lokasi Mall Central Park Lt. 5 Food Court" class="flex items-center gap-3 location-text">
-            <i class="fas fa-map-marker-alt text-[#3b82f6]"></i>
-            <strong>Mall Central Park</strong> - Lt. 5 Food Court
+          <div class="mt-10 flex justify-center">
+            <img alt="Customer service representative wearing headset, smiling and ready to assist customers in a modern office environment" class="w-full max-w-md rounded-2xl border border-blue-600 shadow-lg" decoding="async" height="400" loading="lazy" src="https://storage.googleapis.com/a1aa/image/6db124c2-c33b-46c4-fb42-0f84e53d51a3.jpg" width="600"/>
           </div>
-          <div aria-label="Lokasi Pluit Village Area Gaming Zone" class="flex items-center gap-3 location-text">
-            <i class="fas fa-map-marker-alt text-[#3b82f6]"></i>
-            <strong>Pluit Village</strong> - Area Gaming Zone
-          </div>
-        </div>
-      </article>
-    </section>
-
-    <!-- History Page -->
-    <section aria-label="Riwayat Pembelian" class="page hidden" id="historyPage" tabindex="-1">
-      <article class="card p-8 relative">
-        <h2 class="section-heading font-extrabold select-none flex items-center gap-4 text-[#2563eb]">
-          <i class="fas fa-history"></i>
-          Riwayat Pembelian
-        </h2>
-        <div class="flex justify-end mb-6">
-          <button aria-label="Refresh Status Riwayat" class="nav-btn rounded-corners px-6 py-3 flex items-center gap-3 refresh-btn" id="refreshHistoryBtn">
-            <i class="fas fa-sync-alt"></i>
-            Refresh Status
-          </button>
-        </div>
-        <div aria-live="polite" aria-relevant="additions" class="grid gap-4" id="historyList" role="list"></div>
-      </article>
-    </section>
+        </article>
+      </section>
+    </main>
   </div>
-
+  
   <!-- QR Modal -->
-  <div aria-labelledby="qrModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 hidden" id="qrModal" role="dialog">
-    <div class="modal-content animate-scaleIn" style="animation: modalIn 0.3s ease forwards">
-      <h3 class="select-none flex justify-center items-center gap-3" id="qrModalTitle">
-        <i class="fas fa-qrcode text-[#2563eb]"></i>
+  <div aria-labelledby="qrModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 hidden" id="qrModal" role="dialog">
+    <div class="modal-content animate-scaleIn bg-gradient-to-br from-black/90 to-blue-900/90 rounded-3xl border border-blue-600 shadow-2xl p-10 max-w-md w-full text-blue-300" style="animation: modalIn 0.3s ease forwards">
+      <h3 class="select-none flex justify-center items-center gap-4 text-2xl font-extrabold text-blue-400 mb-8" id="qrModalTitle">
+        <i class="fas fa-qrcode"></i>
         Scan QR Pembayaran
       </h3>
-      <img alt="QR Code for payment scanning" class="w-64 h-64 mx-auto my-6 object-contain rounded-xl border-2 border-[#3b82f6] shadow-lg" id="qrImage" src=""/>
-      <div aria-live="polite" class="mb-6 text-lg font-semibold select-none text-center text-[#475569]" id="paymentStatus"></div>
-      <button aria-label="Kirim ulang QRIS ke email" class="resend-btn" id="resendQrisBtn">
+      <img alt="QR Code for payment scanning" class="w-64 h-64 mx-auto my-6 object-contain rounded-2xl border-4 border-blue-600 shadow-lg" decoding="async" id="qrImage" loading="lazy" src=""/>
+      <div aria-live="polite" class="mb-8 text-lg font-semibold select-none text-center text-blue-300" id="paymentStatus"></div>
+      <button aria-label="Kirim ulang QRIS ke email" class="resend-btn w-full rounded-2xl border-2 border-blue-600 bg-transparent text-blue-400 font-semibold py-4 flex items-center justify-center gap-3 shadow-md hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 transition mb-6" id="resendQrisBtn">
         <i class="fas fa-envelope"></i>
         Kirim Ulang QRIS ke Email
       </button>
-      <div class="text-center text-sm font-semibold select-none min-h-[1.25rem]" id="resendMessage"></div>
-      <button aria-label="Tutup modal QR pembayaran" class="nav-btn rounded-corners w-full py-3 flex items-center justify-center gap-3" onclick="closeModal()">
+      <div class="text-center text-sm font-semibold select-none min-h-[1.25rem] text-blue-300 mb-6" id="resendMessage"></div>
+      <button aria-label="Tutup modal QR pembayaran" class="nav-btn rounded-2xl w-full py-3 flex items-center justify-center gap-4 bg-transparent border-2 border-blue-600 text-blue-400 font-semibold shadow-md hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 transition" onclick="closeModal()">
         <i class="fas fa-times"></i>
         Tutup
       </button>
     </div>
   </div>
-
+  
   <!-- Voucher Modal -->
-  <div aria-labelledby="voucherModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 hidden" id="voucherModal" role="dialog">
-    <div class="modal-content animate-scaleIn" style="animation: modalIn 0.3s ease forwards">
-      <h3 class="select-none flex justify-center items-center gap-3" id="voucherModalTitle">
-        <i class="fas fa-ticket-alt text-[#2563eb]"></i>
+  <div aria-labelledby="voucherModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 hidden" id="voucherModal" role="dialog">
+    <div class="modal-content animate-scaleIn bg-gradient-to-br from-black/90 to-blue-900/90 rounded-3xl border border-blue-600 shadow-2xl p-10 max-w-md w-full text-blue-300" style="animation: modalIn 0.3s ease forwards">
+      <h3 class="select-none flex justify-center items-center gap-4 text-2xl font-extrabold text-blue-400 mb-8" id="voucherModalTitle">
+        <i class="fas fa-ticket-alt"></i>
         Kode Voucher Anda
       </h3>
-      <div aria-live="polite" class="text-4xl font-mono font-extrabold text-[#1e40af] mb-8 select-all break-words text-center" id="voucherCode"></div>
-      <button aria-label="Kirim ulang voucher ke email" class="resend-btn" id="resendVoucherBtn">
+      <div aria-live="polite" class="text-5xl font-mono font-extrabold text-blue-600 mb-12 select-all break-words text-center tracking-widest" id="voucherCode"></div>
+      <button aria-label="Kirim ulang voucher ke email" class="resend-btn w-full rounded-2xl border-2 border-blue-600 bg-transparent text-blue-400 font-semibold py-4 flex items-center justify-center gap-3 shadow-md hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 transition mb-6" id="resendVoucherBtn">
         <i class="fas fa-envelope"></i>
         Kirim Ulang Voucher ke Email
       </button>
-      <div class="text-center text-sm font-semibold select-none min-h-[1.25rem]" id="resendVoucherMessage"></div>
-      <button aria-label="Tutup modal kode voucher" class="nav-btn rounded-corners w-full py-3 flex items-center justify-center gap-3" onclick="closeVoucherModal()">
+      <div class="text-center text-sm font-semibold select-none min-h-[1.25rem] text-blue-300 mb-6" id="resendVoucherMessage"></div>
+      <button aria-label="Tutup modal kode voucher" class="nav-btn rounded-2xl w-full py-3 flex items-center justify-center gap-4 bg-transparent border-2 border-blue-600 text-blue-400 font-semibold shadow-md hover:bg-blue-700 hover:text-white focus:outline-none focus:ring-4 focus:ring-blue-500 transition" onclick="closeVoucherModal()">
         <i class="fas fa-times"></i>
         Tutup
       </button>
     </div>
   </div>
-
-  <footer class="text-center py-8 text-[#64748b] select-none">
-    <p>
+  
+  <footer class="text-center py-8 text-blue-400 select-none bg-gradient-to-t from-blue-900/80 to-black/80 border-t border-blue-600 mt-12">
+    <p class="text-sm md:text-base font-semibold tracking-wide">
       ✨ Dikembangkan dengan
-      <i class="fas fa-heart text-[#ef4444]"></i>
+      <i class="fas fa-heart text-red-500 mx-1"></i>
       oleh
-      <strong>OnclDev X ZarCode</strong>
+      <strong class="text-white">OnclDev X ZarCode</strong>
     </p>
   </footer>
 
   <script>
-    const API_BASE = 'https://vwproject-production.up.railway.app';
+    const API_BASE = "https://123zarrrr.vercel.app";
     let currentTransactionId = null;
     let currentTransactionEmail = null;
 
-    // Page Navigation
-    const pages = {
-      home: document.getElementById('homePage'),
-      history: document.getElementById('historyPage'),
-    };
-
-    const navButtonsContainer = document.getElementById('navButtons');
-
-    // Buttons definitions
-    const btnBuyVoucher = document.createElement('button');
-    btnBuyVoucher.type = 'button';
-    btnBuyVoucher.className = "nav-btn rounded-corners";
-    btnBuyVoucher.setAttribute('aria-label', 'Beli Voucher');
-    btnBuyVoucher.innerHTML = '<i class="fas fa-shopping-cart"></i> Beli Voucher';
-    btnBuyVoucher.addEventListener('click', () => showPage('home'));
-
-    const btnHistory = document.createElement('button');
-    btnHistory.type = 'button';
-    btnHistory.className = "nav-btn rounded-corners";
-    btnHistory.setAttribute('aria-label', 'Riwayat');
-    btnHistory.innerHTML = '<i class="fas fa-history"></i> Riwayat';
-    btnHistory.addEventListener('click', () => showPage('history'));
-
-    function updateNavButtons(pageId) {
-      navButtonsContainer.innerHTML = '';
-      if (pageId === 'home') {
-        navButtonsContainer.appendChild(btnHistory);
-      } else if (pageId === 'history') {
-        navButtonsContainer.appendChild(btnBuyVoucher);
+    // Toast Notification Function
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastIcon = document.getElementById('toastIcon');
+      const toastMessage = document.getElementById('toastMessage');
+      
+      toast.className = `toast ${type}`;
+      toastMessage.textContent = message;
+      
+      if (type === 'success') {
+        toastIcon.className = 'fas fa-check-circle';
+      } else if (type === 'error') {
+        toastIcon.className = 'fas fa-times-circle';
+      } else if (type === 'warning') {
+        toastIcon.className = 'fas fa-exclamation-triangle';
       }
-    }
-
-    function showPage(pageId) {
-      Object.values(pages).forEach((page) => (page.style.display = 'none'));
-      pages[pageId].style.display = 'block';
-      pages[pageId].focus?.();
-
-      updateNavButtons(pageId);
-
-      if (pageId === 'history') loadHistory();
+      
+      toast.classList.remove('hidden');
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 5000);
     }
 
     // Modal Handling
     function showModal(modalId) {
-      document.getElementById(modalId).classList.remove('hidden');
-      document.getElementById(modalId).classList.add('flex');
+      document.getElementById(modalId).classList.remove("hidden");
+      document.getElementById(modalId).classList.add("flex");
     }
 
     function closeModal() {
-      document.querySelectorAll('.modal').forEach((modal) => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+      document.querySelectorAll(".modal").forEach((modal) => {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
       });
-      const resendBtn = document.getElementById('resendQrisBtn');
+      const resendBtn = document.getElementById("resendQrisBtn");
       resendBtn.disabled = false;
       resendBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang QRIS ke Email';
-      document.getElementById('paymentStatus').textContent = '';
-      document.getElementById('resendMessage').textContent = '';
+      document.getElementById("paymentStatus").textContent = "";
+      document.getElementById("resendMessage").textContent = "";
       currentTransactionId = null;
       currentTransactionEmail = null;
     }
 
     function closeVoucherModal() {
-      const voucherModal = document.getElementById('voucherModal');
-      voucherModal.classList.add('hidden');
-      voucherModal.classList.remove('flex');
-      const resendVoucherBtn = document.getElementById('resendVoucherBtn');
+      const voucherModal = document.getElementById("voucherModal");
+      voucherModal.classList.add("hidden");
+      voucherModal.classList.remove("flex");
+      const resendVoucherBtn = document.getElementById("resendVoucherBtn");
       resendVoucherBtn.disabled = false;
       resendVoucherBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang Voucher ke Email';
-      document.getElementById('resendVoucherMessage').textContent = '';
+      document.getElementById("resendVoucherMessage").textContent = "";
       currentTransactionId = null;
       currentTransactionEmail = null;
     }
 
     // Purchase Handling
-    const purchaseForm = document.getElementById('purchaseForm');
-    purchaseForm.addEventListener('submit', async (e) => {
+    const purchaseForm = document.getElementById("purchaseForm");
+    purchaseForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const loader = document.getElementById('loader');
-      const loadText = document.getElementById('loadText');
+      const loader = document.getElementById("loader");
+      const loadText = document.getElementById("loadText");
+      const emailInput = document.getElementById("email");
       const formData = {
-        type: document.getElementById('duration').value,
-        email: document.getElementById('email').value.trim(),
+        type: document.getElementById("duration").value,
+        email: emailInput.value.trim(),
       };
 
-      loader.classList.remove('hidden');
+      if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        showToast("Masukkan alamat email yang valid", "error");
+        emailInput.focus();
+        return;
+      }
+
+      loader.classList.remove("hidden");
       loadText.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
       try {
         const response = await fetch(`${API_BASE}/api/generate-qr`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
         });
@@ -714,47 +517,51 @@
         if (response.ok) {
           currentTransactionId = data.transactionId;
           currentTransactionEmail = formData.email;
-          showModal('qrModal');
-          const qrImage = document.getElementById('qrImage');
+          showModal("qrModal");
+          const qrImage = document.getElementById("qrImage");
           qrImage.src = data.qrUrl;
           qrImage.alt = `QR Code for payment of transaction ${data.transactionId}`;
-          document.getElementById('paymentStatus').textContent = '🔄 Memeriksa status pembayaran...';
-          document.getElementById('resendMessage').textContent = '';
+          document.getElementById("paymentStatus").textContent = "🔄 Memeriksa status pembayaran...";
+          document.getElementById("resendMessage").textContent = "";
           checkPaymentStatus();
           saveToHistory(data);
+          showToast("QR Code berhasil dibuat. Silakan scan untuk pembayaran.", "success");
         } else {
-          alert(`Error: ${data.error}`);
+          showToast(`Error: ${data.error || "Gagal membuat QR Code"}`, "error");
         }
       } catch (error) {
-        alert('Terjadi kesalahan jaringan');
+        showToast("Terjadi kesalahan jaringan", "error");
       } finally {
-        loader.classList.add('hidden');
+        loader.classList.add("hidden");
         loadText.innerHTML = '<i class="fas fa-credit-card"></i> Bayar Sekarang';
       }
     });
 
     async function checkPaymentStatus() {
-      const statusElement = document.getElementById('paymentStatus');
+      const statusElement = document.getElementById("paymentStatus");
       if (!currentTransactionId) return;
 
       try {
         const response = await fetch(`${API_BASE}/api/check-status/${currentTransactionId}`);
         const data = await response.json();
 
-        if (data.status === 'paid') {
-          statusElement.textContent = '✅ Pembayaran berhasil!';
-          updateHistoryStatus(currentTransactionId, 'Paid');
+        if (data.status === "paid") {
+          statusElement.textContent = "✅ Pembayaran berhasil!";
+          updateHistoryStatus(currentTransactionId, "Paid");
           const voucher = await getVoucher();
           closeModal();
           showVoucherModal(voucher);
-        } else if (data.status === 'expired') {
-          statusElement.textContent = '❌ Pembayaran kedaluwarsa';
-          updateHistoryStatus(currentTransactionId, 'Expired');
+          showToast("Pembayaran berhasil! Voucher telah dikirim.", "success");
+        } else if (data.status === "expired") {
+          statusElement.textContent = "❌ Pembayaran kedaluwarsa";
+          updateHistoryStatus(currentTransactionId, "Expired");
+          showToast("Pembayaran kedaluwarsa. Silakan coba lagi.", "warning");
         } else {
           setTimeout(checkPaymentStatus, 3000);
         }
       } catch (error) {
-        statusElement.textContent = '⚠️ Gagal memeriksa status';
+        statusElement.textContent = "⚠️ Gagal memeriksa status";
+        showToast("Gagal memeriksa status pembayaran", "error");
       }
     }
 
@@ -762,64 +569,67 @@
       try {
         const response = await fetch(`${API_BASE}/api/get-voucher/${currentTransactionId}`);
         const data = await response.json();
-        updateHistoryStatus(currentTransactionId, 'Paid');
+        updateHistoryStatus(currentTransactionId, "Paid");
         return data.voucher;
       } catch (error) {
-        return 'Gagal mendapatkan voucher';
+        showToast("Gagal mendapatkan voucher", "error");
+        return "Gagal mendapatkan voucher";
       }
     }
 
     function showVoucherModal(voucherCode) {
-      const voucherModal = document.getElementById('voucherModal');
-      const voucherCodeDiv = document.getElementById('voucherCode');
+      const voucherModal = document.getElementById("voucherModal");
+      const voucherCodeDiv = document.getElementById("voucherCode");
       voucherCodeDiv.textContent = voucherCode;
-      showModal('voucherModal');
+      showModal("voucherModal");
     }
 
     // History Handling
     function saveToHistory(data) {
-      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      const history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
       history.push({
         id: data.transactionId,
         amount: data.amount,
         email: data.email,
-        date: new Date().toISOString(), // Simpan sebagai ISO string untuk sorting yang lebih mudah
-        status: 'Pending',
-        qrUrl: data.qrUrl
+        date: new Date().toISOString(),
+        status: "Pending",
+        qrUrl: data.qrUrl,
       });
-      localStorage.setItem('purchaseHistory', JSON.stringify(history));
+      localStorage.setItem("purchaseHistory", JSON.stringify(history));
       loadHistory();
     }
 
     function updateHistoryStatus(transactionId, newStatus) {
-      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+      const history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
       const idx = history.findIndex((item) => item.id === transactionId);
       if (idx !== -1) {
-        if (newStatus.toLowerCase() === 'paid') {
-          history[idx].status = 'Paid';
-          localStorage.setItem('purchaseHistory', JSON.stringify(history));
+        if (newStatus.toLowerCase() === "paid") {
+          history[idx].status = "Paid";
+          localStorage.setItem("purchaseHistory", JSON.stringify(history));
           loadHistory();
-        } else if (history[idx].status.toLowerCase() !== 'paid') {
+        } else if (history[idx].status.toLowerCase() !== "paid") {
           history[idx].status = newStatus;
-          localStorage.setItem('purchaseHistory', JSON.stringify(history));
+          localStorage.setItem("purchaseHistory", JSON.stringify(history));
           loadHistory();
         }
       }
     }
 
     async function checkAllTransactionsStatus() {
-      const history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
-      const pendingTransactions = history.filter(item => item.status.toLowerCase() === 'pending');
+      const history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+      const pendingTransactions = history.filter(
+        (item) => item.status.toLowerCase() === "pending"
+      );
 
       for (const transaction of pendingTransactions) {
         try {
           const response = await fetch(`${API_BASE}/api/check-status/${transaction.id}`);
           const data = await response.json();
 
-          if (data.status === 'paid') {
-            updateHistoryStatus(transaction.id, 'Paid');
-          } else if (data.status === 'expired') {
-            updateHistoryStatus(transaction.id, 'Expired');
+          if (data.status === "paid") {
+            updateHistoryStatus(transaction.id, "Paid");
+          } else if (data.status === "expired") {
+            updateHistoryStatus(transaction.id, "Expired");
           }
         } catch (error) {
           console.error(`Error checking status for transaction ${transaction.id}:`, error);
@@ -827,26 +637,25 @@
       }
 
       loadHistory();
+      showToast("Status riwayat pembelian telah diperbarui", "success");
     }
 
     async function loadHistory() {
-      let history = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
-      const historyList = document.getElementById('historyList');
+      let history = JSON.parse(localStorage.getItem("purchaseHistory")) || [];
+      const historyList = document.getElementById("historyList");
 
       if (history.length === 0) {
-        historyList.innerHTML =
-          '<p class="text-center text-[#64748b] select-none">Belum ada riwayat pembelian.</p>';
+        historyList.innerHTML = '<p class="text-center text-blue-400 select-none text-lg font-semibold">Belum ada riwayat pembelian.</p>';
         return;
       }
 
-      // Sort history by date (newest first)
       history = history.sort((a, b) => new Date(b.date) - new Date(a.date));
 
       historyList.innerHTML = history
         .map(
           (item) => `
           <div
-            class="history-item"
+            class="history-item cursor-pointer rounded-2xl bg-gradient-to-r from-black/80 to-blue-900/90 border border-blue-600 p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500"
             role="listitem"
             tabindex="0"
             aria-label="Transaksi ${item.id} dengan email ${item.email} dan status ${item.status}"
@@ -855,30 +664,41 @@
             data-qrurl="${item.qrUrl || ''}"
             data-email="${item.email}"
           >
-            <div class="history-content">
-              <strong class="block text-lg">${item.id}</strong>
-              <span class="text-sm text-[#475569]">${item.email} - Rp ${item.amount}</span>
-              <time class="block text-xs text-[#94a3b8] mt-1">${new Date(item.date).toLocaleString()}</time>
+            <div class="history-content flex flex-col gap-1">
+              <strong class="block text-xl text-blue-300 truncate">${item.id}</strong>
+              <span class="text-sm text-blue-400">${item.email} - Rp ${item.amount}</span>
+              <time class="block text-xs text-blue-500 mt-1">${new Date(item.date).toLocaleString()}</time>
             </div>
-            <div class="history-actions">
-              <div class="status-badge ${item.status.toLowerCase()}">
+            <div class="history-actions flex items-center gap-4">
+              <div class="status-badge ${
+                item.status.toLowerCase() === "pending"
+                  ? "bg-yellow-400 text-black"
+                  : item.status.toLowerCase() === "paid"
+                  ? "bg-green-500 text-white"
+                  : "bg-red-600 text-white"
+              } font-semibold px-4 py-1 rounded-full text-sm flex items-center gap-2 select-none">
+                ${item.status === "Pending" ? '<i class="fas fa-hourglass-half"></i>' : ""}
+                ${item.status === "Paid" ? '<i class="fas fa-check-circle"></i>' : ""}
+                ${item.status === "Expired" ? '<i class="fas fa-times-circle"></i>' : ""}
                 ${item.status}
               </div>
-              ${item.status.toLowerCase() === 'paid' ? 
-                `<button class="action-btn copy-btn" data-id="${item.id}" aria-label="Salin voucher">
-                  <i class="fas fa-copy"></i>
-                </button>` : ''}
+              ${
+                item.status.toLowerCase() === "paid"
+                  ? `<button class="action-btn copy-btn rounded-lg border border-green-500 text-green-500 hover:bg-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-green-400 p-2 flex items-center justify-center" data-id="${item.id}" aria-label="Salin voucher" title="Salin voucher">
+                      <i class="fas fa-copy"></i>
+                    </button>`
+                  : ""
+              }
             </div>
           </div>
         `
         )
-        .join('');
+        .join("");
 
-      // Add event listeners for copy buttons
-      document.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", async (e) => {
           e.stopPropagation();
-          const transactionId = btn.getAttribute('data-id');
+          const transactionId = btn.getAttribute("data-id");
           try {
             const response = await fetch(`${API_BASE}/api/get-voucher/${transactionId}`);
             const data = await response.json();
@@ -888,33 +708,34 @@
                 const originalContent = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i>';
                 btn.disabled = true;
+                showToast("Voucher berhasil disalin ke clipboard", "success");
                 setTimeout(() => {
                   btn.innerHTML = originalContent;
                   btn.disabled = false;
                 }, 2000);
               });
             } else {
-              alert('Gagal mendapatkan voucher untuk disalin');
+              showToast("Gagal mendapatkan voucher untuk disalin", "error");
             }
           } catch (error) {
-            alert('Terjadi kesalahan saat menyalin voucher');
+            showToast("Terjadi kesalahan saat menyalin voucher", "error");
           }
         });
       });
 
-      document.querySelectorAll('.history-item').forEach((el) => {
-        el.addEventListener('click', async () => {
-          const status = el.getAttribute('data-status').toLowerCase();
-          const transactionId = el.getAttribute('data-id');
-          const email = el.getAttribute('data-email');
+      document.querySelectorAll(".history-item").forEach((el) => {
+        el.addEventListener("click", async () => {
+          const status = el.getAttribute("data-status").toLowerCase();
+          const transactionId = el.getAttribute("data-id");
+          const email = el.getAttribute("data-email");
 
-          if (status === 'pending') {
+          if (status === "pending") {
             try {
               const statusResponse = await fetch(`${API_BASE}/api/check-status/${transactionId}`);
               const statusData = await statusResponse.json();
 
-              if (statusData.status === 'paid') {
-                updateHistoryStatus(transactionId, 'Paid');
+              if (statusData.status === "paid") {
+                updateHistoryStatus(transactionId, "Paid");
                 const voucher = await fetchVoucherForHistory(transactionId);
                 if (voucher) {
                   currentTransactionId = transactionId;
@@ -927,35 +748,35 @@
               console.error("Error checking status:", error);
             }
 
-            const qrUrl = el.getAttribute('data-qrurl');
+            const qrUrl = el.getAttribute("data-qrurl");
             if (qrUrl) {
               currentTransactionId = transactionId;
               currentTransactionEmail = email;
-              showModal('qrModal');
-              const qrImage = document.getElementById('qrImage');
+              showModal("qrModal");
+              const qrImage = document.getElementById("qrImage");
               qrImage.src = qrUrl;
               qrImage.alt = `QR Code for payment of transaction ${currentTransactionId}`;
-              const paymentStatus = document.getElementById('paymentStatus');
-              paymentStatus.textContent = '🔄 Memeriksa status pembayaran...';
-              document.getElementById('resendMessage').textContent = '';
+              const paymentStatus = document.getElementById("paymentStatus");
+              paymentStatus.textContent = "🔄 Memeriksa status pembayaran...";
+              document.getElementById("resendMessage").textContent = "";
               checkPaymentStatus();
             } else {
-              alert('QR Code tidak tersedia untuk transaksi ini.');
+              showToast("QR Code tidak tersedia untuk transaksi ini.", "warning");
             }
-          } else if (status === 'paid') {
+          } else if (status === "paid") {
             currentTransactionId = transactionId;
             currentTransactionEmail = email;
             const voucher = await fetchVoucherForHistory(transactionId);
             if (voucher) {
               showVoucherModal(voucher);
-              document.getElementById('resendVoucherMessage').textContent = '';
+              document.getElementById("resendVoucherMessage").textContent = "";
             } else {
-              alert('Gagal mendapatkan kode voucher.');
+              showToast("Gagal mendapatkan kode voucher.", "error");
             }
           }
         });
-        el.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             el.click();
           }
@@ -970,7 +791,7 @@
         const data = await response.json();
 
         if (data.voucher) {
-          updateHistoryStatus(transactionId, 'Paid');
+          updateHistoryStatus(transactionId, "Paid");
         }
 
         return data.voucher || null;
@@ -980,33 +801,36 @@
     }
 
     // Resend QRIS Email Button Handling
-    const resendQrisBtn = document.getElementById('resendQrisBtn');
-    const resendMessage = document.getElementById('resendMessage');
-    resendQrisBtn.addEventListener('click', async () => {
+    const resendQrisBtn = document.getElementById("resendQrisBtn");
+    const resendMessage = document.getElementById("resendMessage");
+    resendQrisBtn.addEventListener("click", async () => {
       if (!currentTransactionId) return;
       resendQrisBtn.disabled = true;
       resendQrisBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim ulang...';
-      resendMessage.textContent = '';
-      resendMessage.classList.remove('text-green-600', 'text-red-600');
+      resendMessage.textContent = "";
+      resendMessage.classList.remove("text-green-600", "text-red-600");
 
       try {
         const response = await fetch(`${API_BASE}/api/resend-qris-email/${currentTransactionId}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          resendMessage.textContent = 'Berhasil kirim qris ke email';
-          resendMessage.classList.add('text-green-600');
+          resendMessage.textContent = "Berhasil kirim qris ke email";
+          resendMessage.classList.add("text-green-600");
+          showToast("QRIS berhasil dikirim ulang ke email", "success");
         } else {
-          resendMessage.textContent = 'Gagal mengirim qris ke email';
-          resendMessage.classList.add('text-red-600');
+          resendMessage.textContent = "Gagal mengirim qris ke email";
+          resendMessage.classList.add("text-red-600");
+          showToast("Gagal mengirim QRIS ke email", "error");
         }
       } catch (error) {
-        resendMessage.textContent = 'Gagal mengirim qris ke email';
-        resendMessage.classList.add('text-red-600');
+        resendMessage.textContent = "Gagal mengirim qris ke email";
+        resendMessage.classList.add("text-red-600");
+        showToast("Terjadi kesalahan saat mengirim QRIS", "error");
       } finally {
         resendQrisBtn.disabled = false;
         resendQrisBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang QRIS ke Email';
@@ -1014,33 +838,36 @@
     });
 
     // Resend Voucher Email Button Handling
-    const resendVoucherBtn = document.getElementById('resendVoucherBtn');
-    const resendVoucherMessage = document.getElementById('resendVoucherMessage');
-    resendVoucherBtn.addEventListener('click', async () => {
+    const resendVoucherBtn = document.getElementById("resendVoucherBtn");
+    const resendVoucherMessage = document.getElementById("resendVoucherMessage");
+    resendVoucherBtn.addEventListener("click", async () => {
       if (!currentTransactionId) return;
       resendVoucherBtn.disabled = true;
       resendVoucherBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim ulang...';
-      resendVoucherMessage.textContent = '';
-      resendVoucherMessage.classList.remove('text-green-600', 'text-red-600');
+      resendVoucherMessage.textContent = "";
+      resendVoucherMessage.classList.remove("text-green-600", "text-red-600");
 
       try {
         const response = await fetch(`${API_BASE}/api/resend-voucher-email/${currentTransactionId}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          resendVoucherMessage.textContent = 'Berhasil kirim voucher ke email';
-          resendVoucherMessage.classList.add('text-green-600');
+          resendVoucherMessage.textContent = "Berhasil kirim voucher ke email";
+          resendVoucherMessage.classList.add("text-green-600");
+          showToast("Voucher berhasil dikirim ulang ke email", "success");
         } else {
-          resendVoucherMessage.textContent = 'Gagal mengirim voucher ke email';
-          resendVoucherMessage.classList.add('text-red-600');
+          resendVoucherMessage.textContent = "Gagal mengirim voucher ke email";
+          resendVoucherMessage.classList.add("text-red-600");
+          showToast("Gagal mengirim voucher ke email", "error");
         }
       } catch (error) {
-        resendVoucherMessage.textContent = 'Gagal mengirim voucher ke email';
-        resendVoucherMessage.classList.add('text-red-600');
+        resendVoucherMessage.textContent = "Gagal mengirim voucher ke email";
+        resendVoucherMessage.classList.add("text-red-600");
+        showToast("Terjadi kesalahan saat mengirim voucher", "error");
       } finally {
         resendVoucherBtn.disabled = false;
         resendVoucherBtn.innerHTML = '<i class="fas fa-envelope"></i> Kirim Ulang Voucher ke Email';
@@ -1048,26 +875,72 @@
     });
 
     // Refresh Status Button Handling
-    const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-    refreshHistoryBtn.addEventListener('click', async () => {
+    const refreshHistoryBtn = document.getElementById("refreshHistoryBtn");
+    refreshHistoryBtn.addEventListener("click", async () => {
       refreshHistoryBtn.disabled = true;
-      refreshHistoryBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      refreshHistoryBtn.classList.add("opacity-50", "cursor-not-allowed");
       refreshHistoryBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memperbarui...';
 
       try {
         await checkAllTransactionsStatus();
       } catch (error) {
-        console.error('Error refreshing history status:', error);
+        console.error("Error refreshing history status:", error);
+        showToast("Gagal memperbarui status riwayat", "error");
       } finally {
         refreshHistoryBtn.disabled = false;
-        refreshHistoryBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        refreshHistoryBtn.classList.remove("opacity-50", "cursor-not-allowed");
         refreshHistoryBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Status';
       }
     });
 
     // Initial Load
     loadHistory();
-    showPage('home');
+
+    // Alpine initialization
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('page', {
+        currentPage: 'home'
+      });
+
+      Alpine.data('app', () => ({
+        currentPage: 'home',
+        init() {
+          this.$watch('currentPage', (value) => {
+            if (value === 'history') {
+              loadHistory();
+              this.$nextTick(() => {
+                const historyPage = document.querySelector('[aria-label="Riwayat Pembelian"]');
+                if(historyPage) historyPage.focus();
+              });
+            }
+            if (value === 'home') {
+              this.$nextTick(() => {
+                const homePage = document.querySelector('[aria-label="Halaman Beli Voucher"]');
+                if(homePage) homePage.focus();
+              });
+            }
+            if (value === 'faq') {
+              this.$nextTick(() => {
+                const faqPage = document.querySelector('[aria-label="Frequently Asked Questions"]');
+                if(faqPage) faqPage.focus();
+              });
+            }
+            if (value === 'info') {
+              this.$nextTick(() => {
+                const infoPage = document.querySelector('[aria-label="Informasi"]');
+                if(infoPage) infoPage.focus();
+              });
+            }
+            if (value === 'customerService') {
+              this.$nextTick(() => {
+                const csPage = document.querySelector('[aria-label="Customer Services"]');
+                if(csPage) csPage.focus();
+              });
+            }
+          });
+        }
+      }));
+    });
   </script>
 </body>
 </html>
