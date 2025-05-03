@@ -670,6 +670,81 @@ app.delete('/api/admin/delete-vouchers/:key', adminAuth, async (req, res) => {
   }
 });
 
+// Get all vouchers grouped by type (admin only)
+app.get('/api/admin/get-all-vouchers', adminAuth, async (req, res) => {
+  try {
+    const allVouchers = await Voucher.find()
+      .sort({ type: 1, createdAt: -1 });
+
+    // Group vouchers by type
+    const groupedVouchers = {
+      type1: [],
+      type2: [],
+      type3: [],
+      type4: [],
+      type5: [],
+    };
+
+    // Map voucher types to human-readable format
+    allVouchers.forEach(voucher => {
+      const entry = {
+        key: voucher.key,
+        used: voucher.used,
+        createdAt: voucher.createdAt,
+        voucherType: voucherTypes[voucher.type]
+      };
+
+      switch(voucher.type) {
+        case 1: groupedVouchers.type1.push(entry); break;
+        case 2: groupedVouchers.type2.push(entry); break;
+        case 3: groupedVouchers.type3.push(entry); break;
+        case 4: groupedVouchers.type4.push(entry); break;
+        case 5: groupedVouchers.type5.push(entry); break;
+      }
+    });
+
+    // Add counts for each type
+    const response = {
+      total_vouchers: allVouchers.length,
+      types: {
+        type1: {
+          total: groupedVouchers.type1.length,
+          available: groupedVouchers.type1.filter(v => !v.used).length,
+          vouchers: groupedVouchers.type1
+        },
+        type2: {
+          total: groupedVouchers.type2.length,
+          available: groupedVouchers.type2.filter(v => !v.used).length,
+          vouchers: groupedVouchers.type2
+        },
+        type3: {
+          total: groupedVouchers.type3.length,
+          available: groupedVouchers.type3.filter(v => !v.used).length,
+          vouchers: groupedVouchers.type3
+        },
+        type4: {
+          total: groupedVouchers.type4.length,
+          available: groupedVouchers.type4.filter(v => !v.used).length,
+          vouchers: groupedVouchers.type4
+        },
+        type5: {
+          total: groupedVouchers.type5.length,
+          available: groupedVouchers.type5.filter(v => !v.used).length,
+          vouchers: groupedVouchers.type5
+        }
+      }
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Get all vouchers error:', error);
+    res.status(500).json({ 
+      error: 'Failed to retrieve vouchers',
+      detail: error.message
+    });
+  }
+});
+
 // Get semua transaksi (admin only)
 app.get('/api/admin/get-transactions', adminAuth, async (req, res) => {
   try {
