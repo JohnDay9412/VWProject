@@ -237,6 +237,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
 // Generate QRIS dengan validasi tipe 1-5
 app.post('/api/generate-qr', async (req, res) => {
   try {
