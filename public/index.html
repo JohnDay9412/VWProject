@@ -87,10 +87,10 @@
       <div id="toastMessage" class="font-semibold"></div>
     </div>
   </div>
-  
+
   <!-- Sidebar Overlay -->
   <div @click="sidebarOpen = false" aria-hidden="true" class="fixed inset-0 bg-black bg-opacity-70 z-40 md:hidden" x-show="sidebarOpen" x-transition.opacity=""></div>
-  
+
   <!-- Sidebar -->
   <aside x-cloak @keydown.shift.tab.prevent="$event.preventDefault()" @keydown.tab.prevent="$event.shiftKey || $event.preventDefault()" aria-label="Sidebar Navigation" class="fixed inset-y-0 left-0 w-64 bg-gradient-to-b from-black/90 to-blue-900/90 border-r border-blue-600 shadow-lg z-50 flex flex-col" x-show="sidebarOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-end="translate-x-0" x-transition:enter-start="-translate-x-full" x-transition:leave="transition ease-in duration-300" x-transition:leave-end="-translate-x-full" x-transition:leave-start="translate-x-0">
     <div class="flex items-center justify-between px-6 py-5 border-b border-blue-600">
@@ -140,7 +140,7 @@
         <img alt="Blue WiFi signal icon with modern style, glowing effect" class="w-10 h-10 drop-shadow-lg" decoding="async" height="40" loading="lazy" src="https://storage.googleapis.com/a1aa/image/7d4949d8-9920-46e9-323d-b5e3e9739e37.jpg" width="40"/>
       </div>
     </nav>
-    
+
     <!-- Desktop Navigation Buttons -->
     <nav aria-label="Primary Navigation" class="hidden md:flex rounded-3xl mb-12 shadow-xl justify-center gap-6 border border-blue-600 bg-gradient-to-r from-black/80 to-blue-900/80 backdrop-blur-md p-6">
       <button :class="currentPage === 'home' ? 'bg-blue-700 text-white' : 'text-blue-400 hover:bg-blue-700 hover:text-white'" @click="currentPage = 'home'" aria-current="page" aria-label="Pembayaran" class="nav-btn rounded-2xl border-2 border-blue-600 font-semibold px-6 py-3 flex items-center gap-3 shadow-md bg-transparent focus:outline-none focus:ring-4 focus:ring-blue-500 transition">
@@ -164,7 +164,7 @@
         Customer Services
       </button>
     </nav>
-    
+
     <!-- Pages -->
     <main class="flex-grow">
       <!-- Pembayaran Page -->
@@ -231,7 +231,7 @@
           </form>
         </article>
       </section>
-      
+
       <!-- Riwayat Page -->
       <section aria-label="Riwayat Pembelian" class="page" tabindex="-1" x-show="currentPage === 'history'" x-transition="">
         <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10 relative">
@@ -248,7 +248,7 @@
           <div aria-live="polite" aria-relevant="additions" class="grid gap-5 max-h-[400px] overflow-y-auto" id="historyList" role="list"></div>
         </article>
       </section>
-      
+
       <!-- FAQ Page -->
       <section aria-label="Frequently Asked Questions" class="page" tabindex="-1" x-show="currentPage === 'faq'" x-transition="">
         <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
@@ -280,7 +280,7 @@
           </div>
         </article>
       </section>
-      
+
       <!-- Info Page -->
       <section aria-label="Informasi" class="page" tabindex="-1" x-show="currentPage === 'info'" x-transition="">
         <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
@@ -333,7 +333,7 @@
           </div>
         </article>
       </section>
-      
+
       <!-- Customer Services Page -->
       <section aria-label="Customer Services" class="page" tabindex="-1" x-show="currentPage === 'customerService'" x-transition="">
         <article class="rounded-3xl bg-gradient-to-br from-black/80 to-blue-900/90 border border-blue-600 shadow-lg p-10">
@@ -370,7 +370,7 @@
       </section>
     </main>
   </div>
-  
+
   <!-- QR Modal -->
   <div aria-labelledby="qrModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 hidden" id="qrModal" role="dialog">
     <div class="modal-content animate-scaleIn bg-gradient-to-br from-black/90 to-blue-900/90 rounded-3xl border border-blue-600 shadow-2xl p-10 max-w-md w-full text-blue-300" style="animation: modalIn 0.3s ease forwards">
@@ -391,7 +391,7 @@
       </button>
     </div>
   </div>
-  
+
   <!-- Voucher Modal -->
   <div aria-labelledby="voucherModalTitle" aria-modal="true" class="modal fixed inset-0 bg-black bg-opacity-90 flex justify-center items-center z-50 hidden" id="voucherModal" role="dialog">
     <div class="modal-content animate-scaleIn bg-gradient-to-br from-black/90 to-blue-900/90 rounded-3xl border border-blue-600 shadow-2xl p-10 max-w-md w-full text-blue-300" style="animation: modalIn 0.3s ease forwards">
@@ -411,7 +411,7 @@
       </button>
     </div>
   </div>
-  
+
   <footer class="text-center py-8 text-blue-400 select-none bg-gradient-to-t from-blue-900/80 to-black/80 border-t border-blue-600 mt-12">
     <p class="text-sm md:text-base font-semibold tracking-wide">
       ✨ Dikembangkan dengan
@@ -422,7 +422,7 @@
   </footer>
 
   <script>
-    const API_BASE = "https://voucher-wifi.oneclash.web.id";
+    const API_BASE = "https://eksone.vercel.app";
     let currentTransactionId = null;
     let currentTransactionEmail = null;
 
@@ -431,10 +431,10 @@
       const toast = document.getElementById('toast');
       const toastIcon = document.getElementById('toastIcon');
       const toastMessage = document.getElementById('toastMessage');
-      
+
       toast.className = `toast ${type}`;
       toastMessage.textContent = message;
-      
+
       if (type === 'success') {
         toastIcon.className = 'fas fa-check-circle';
       } else if (type === 'error') {
@@ -442,10 +442,10 @@
       } else if (type === 'warning') {
         toastIcon.className = 'fas fa-exclamation-triangle';
       }
-      
+
       toast.classList.remove('hidden');
       toast.classList.add('show');
-      
+
       setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.classList.add('hidden'), 300);

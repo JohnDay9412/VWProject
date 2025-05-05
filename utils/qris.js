@@ -6,8 +6,6 @@ const QRCode = require('qrcode');
 const bodyParser = require('body-parser');
 const { ImageUploadService } = require('node-upload-images');
 
-//mbuh
-
 // =============================================
 //                HELPER FUNCTIONS
 // =============================================
